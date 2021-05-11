@@ -55,6 +55,9 @@ public class FileService {
                 String[] split = nextLine.split(Pattern.quote("|"));
                 License license = new License(split[0], split[1], split[2], split[3], split[4], split[5], split[6], split[7], split[8], split[9]);
                 license.setFile(file);
+                if (licenses.stream().anyMatch(license1 -> license1.getLicenseNumber().equals(license.getLicenseNumber()))) {
+                    continue;
+                }
                 licenses.add(license);
             }
         } catch (IOException e) {
