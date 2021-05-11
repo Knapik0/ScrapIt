@@ -37,7 +37,7 @@ public class License {
         this.file = file;
     }
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     private File file;
 
     public License(String licenseNumber, String lastName, String firstName, String middleName, String city, String state, String status, String issueDate, String expirationDate, String boardAction) {

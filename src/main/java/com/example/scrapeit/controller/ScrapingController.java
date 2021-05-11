@@ -2,6 +2,7 @@ package com.example.scrapeit.controller;
 
 import com.example.scrapeit.model.File;
 import com.example.scrapeit.model.FileData;
+import com.example.scrapeit.model.License;
 import com.example.scrapeit.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class ScrapingController {
 
     @GetMapping("/files/{fileId}")
     @ResponseBody
-    public ResponseEntity<FileData> generateFile(@PathVariable("fileId") Long fileId) {
+    public ResponseEntity<FileData> getFileData(@PathVariable("fileId") Long fileId) {
 
         FileData fileData = fileService.findFileDataById(fileId);
         return new ResponseEntity<>(fileData, HttpStatus.OK);
@@ -46,10 +47,13 @@ public class ScrapingController {
         fileService.saveFile(file);
         return "You successfully uploaded " + file.getOriginalFilename() + "!";
     }
-//
-//    @ExceptionHandler(FileNotFoundException.class)
-//    public ResponseEntity<?> handleStorageFileNotFound(FileNotFoundException exc) {
-//        return ResponseEntity.notFound().build();
-//    }
+
+    @GetMapping("/licenses/{fileId}")
+    @ResponseBody
+    public ResponseEntity<List<License>> getLicensesById(@PathVariable("fileId") Long fileId) {
+
+        List<License> licenses = fileService.findLicensesById(fileId);
+        return new ResponseEntity<>(licenses, HttpStatus.OK);
+    }
 
 }

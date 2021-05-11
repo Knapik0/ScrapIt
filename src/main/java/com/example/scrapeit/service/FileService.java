@@ -63,6 +63,9 @@ public class FileService {
         FileData fileData = new FileData(fileName, count - 1,new Date(System.currentTimeMillis()), file);
         fileDataRepo.save(fileData);
         licenseRepo.saveAll(licenses);
-//        fileRepo.save(file);
+    }
+
+    public List<License> findLicensesById(Long fileId) {
+        return licenseRepo.findAllByFileId(fileId);
     }
 }
