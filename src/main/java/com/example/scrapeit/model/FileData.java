@@ -15,7 +15,7 @@ public class FileData {
 
     private Date createdAt;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @MapsId
     private File file;
 

@@ -40,7 +40,8 @@ public class FileService {
 
     public void saveFile(MultipartFile multipartFile) {
         String fileName = multipartFile.getOriginalFilename();
-        File file = new File(fileName, new LinkedList<>());
+        File file = new File(fileName);
+        List<License> licenses = new LinkedList<>();
         int count = 0;
         try {
             InputStream inputStream = multipartFile.getInputStream();
@@ -53,13 +54,15 @@ public class FileService {
                 }
                 String[] split = nextLine.split(Pattern.quote("|"));
                 License license = new License(split[0], split[1], split[2], split[3], split[4], split[5], split[6], split[7], split[8], split[9]);
-                file.addLicense(license);
+                license.setFile(file);
+                licenses.add(license);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         FileData fileData = new FileData(fileName, count - 1,new Date(System.currentTimeMillis()), file);
         fileDataRepo.save(fileData);
+        licenseRepo.saveAll(licenses);
 //        fileRepo.save(file);
     }
 }

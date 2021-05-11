@@ -1,7 +1,6 @@
 package com.example.scrapeit.model;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 public class File {
@@ -12,15 +11,11 @@ public class File {
 
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<License> licenses;
-
     public File() {
     }
 
-    public File(String name, List<License> licenses) {
+    public File(String name) {
         this.name = name;
-        this.licenses = licenses;
     }
 
     public Long getId() {
@@ -37,13 +32,5 @@ public class File {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<License> getLicenses() {
-        return licenses;
-    }
-
-    public void addLicense(License license) {
-        licenses.add(license);
     }
 }

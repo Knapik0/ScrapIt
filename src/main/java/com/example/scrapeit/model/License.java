@@ -29,6 +29,17 @@ public class License {
 
     private String boardAction;
 
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private File file;
+
     public License(String licenseNumber, String lastName, String firstName, String middleName, String city, String state, String status, String issueDate, String expirationDate, String boardAction) {
         this.licenseNumber = licenseNumber;
         this.lastName = lastName;
