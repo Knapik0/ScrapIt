@@ -30,8 +30,8 @@ public class CSVHelper {
                         license.getCity(),
                         license.getState(),
                         license.getStatus(),
-                        license.getExpirationDate(),
                         license.getIssueDate(),
+                        license.getExpirationDate(),
                         license.getBoardAction()
                 );
 
@@ -41,7 +41,7 @@ public class CSVHelper {
             csvPrinter.flush();
             return new ByteArrayInputStream(outputStream.toByteArray());
         } catch (IOException e) {
-            throw new CSVFileImportException("Couldn't import data to CSV file: " + e.getMessage());
+            throw new CSVFileImportException("Couldn't import data to CSV file.");
         }
     }
 }
