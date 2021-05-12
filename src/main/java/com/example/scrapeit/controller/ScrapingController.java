@@ -3,9 +3,14 @@ package com.example.scrapeit.controller;
 import com.example.scrapeit.model.File;
 import com.example.scrapeit.model.FileData;
 import com.example.scrapeit.model.License;
+import com.example.scrapeit.service.CSVService;
 import com.example.scrapeit.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +21,12 @@ import java.util.List;
 @RestController
 public class ScrapingController {
 
+    private final CSVService csvService;
     private final FileService fileService;
 
     @Autowired
-    public ScrapingController(FileService fileService) {
+    public ScrapingController(CSVService csvService, FileService fileService) {
+        this.csvService = csvService;
         this.fileService = fileService;
     }
 
@@ -27,7 +34,6 @@ public class ScrapingController {
     public ResponseEntity<List<File>> listUploadedFiles(Model model) {
 
         List<File> files = fileService.loadAllFiles();
-
         return new ResponseEntity<>(files, HttpStatus.OK);
     }
 
@@ -42,8 +48,8 @@ public class ScrapingController {
     @PostMapping("/")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
 
-        fileService.saveFile(file);
-        return new ResponseEntity<>("You succesfully uploaded file", HttpStatus.OK);
+        String response = fileService.saveFile(file);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/licenses/{fileId}")
@@ -52,6 +58,14 @@ public class ScrapingController {
 
         List<License> licenses = fileService.findLicensesById(fileId);
         return new ResponseEntity<>(licenses, HttpStatus.OK);
+    }
+
+    @GetMapping("/licensesAsCSV/{fileId}")
+    @ResponseBody
+    public ResponseEntity<Resource> getLicensesAsCSVById(@PathVariable("fileId") Long fileId) {
+        String filename = fileService.findFileNameById(fileId);
+        InputStreamResource file = new InputStreamResource(csvService.load(fileId));
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename).contentType(MediaType.parseMediaType("application/csv")).body(file);
     }
 
 }

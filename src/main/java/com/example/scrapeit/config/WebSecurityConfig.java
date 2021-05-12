@@ -19,6 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements A
                 .antMatchers(HttpMethod.GET, "/files/*").permitAll()
                 .antMatchers(HttpMethod.GET, "/files").permitAll()
                 .antMatchers(HttpMethod.GET, "/licenses/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/licensesAsCSV/*").permitAll()
                 .anyRequest().authenticated().and()
                 .formLogin()
                     .loginPage("/login")
