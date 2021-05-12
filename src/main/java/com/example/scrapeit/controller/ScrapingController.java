@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -41,10 +40,10 @@ public class ScrapingController {
     }
 
     @PostMapping("/")
-    public String uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
 
         fileService.saveFile(file);
-        return "You successfully uploaded " + file.getOriginalFilename() + "!";
+        return new ResponseEntity<>("You succesfully uploaded file", HttpStatus.OK);
     }
 
     @GetMapping("/licenses/{fileId}")
