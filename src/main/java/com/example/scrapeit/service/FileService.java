@@ -1,13 +1,9 @@
 package com.example.scrapeit.service;
 
-import com.example.scrapeit.exception.FileDataNotFoundException;
 import com.example.scrapeit.model.File;
 import com.example.scrapeit.model.FileData;
 import com.example.scrapeit.model.License;
-import com.example.scrapeit.repository.FileDataRepo;
-import com.example.scrapeit.repository.FileRepo;
-import com.example.scrapeit.repository.LicenseRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.scrapeit.repository.FileRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,29 +15,34 @@ import java.util.regex.Pattern;
 @Service
 public class FileService {
 
-    private final FileRepo fileRepo;
-    private final FileDataRepo fileDataRepo;
-    private final LicenseRepo licenseRepo;
+    private final FileRepository fileRepository;
 
-    @Autowired
-    public FileService(FileRepo fileRepo, FileDataRepo fileDataRepo, LicenseRepo licenseRepo) {
-        this.fileRepo = fileRepo;
-        this.fileDataRepo = fileDataRepo;
-        this.licenseRepo = licenseRepo;
+    public FileService(FileRepository fileRepository) {
+        this.fileRepository = fileRepository;
     }
 
     public List<File> loadAllFiles() {
-        return fileRepo.findAll();
+        return fileRepository.findAll();
     }
     
     public FileData findFileDataById(Long fileId) {
-        return fileDataRepo.findById(fileId).orElseThrow(()-> new FileDataNotFoundException("File with id " + fileId + " was not found"));
+        return fileRepository.findFileDataById(fileId);
     }
 
     public void saveFile(MultipartFile multipartFile) {
         String fileName = multipartFile.getOriginalFilename();
         File file = new File(fileName);
-        List<License> licenses = new LinkedList<>();
+        int count = parseRowsAndGetCount(multipartFile, file);
+        FileData fileData = new FileData(fileName, count - 1,new Date(System.currentTimeMillis()));
+        file.setFileData(fileData);
+        fileRepository.save(file);
+    }
+
+    public List<License> findLicensesById(Long fileId) {
+        return fileRepository.findAllLicensesById(fileId);
+    }
+
+    private int parseRowsAndGetCount(MultipartFile multipartFile, File file) {
         int count = 0;
         try {
             InputStream inputStream = multipartFile.getInputStream();
@@ -52,23 +53,17 @@ public class FileService {
                 if (count == 1) {
                     continue;
                 }
-                String[] split = nextLine.split(Pattern.quote("|"));
-                License license = new License(split[0], split[1], split[2], split[3], split[4], split[5], split[6], split[7], split[8], split[9]);
-                license.setFile(file);
-                if (licenses.stream().anyMatch(license1 -> license1.getLicenseNumber().equals(license.getLicenseNumber()))) {
-                    continue;
-                }
-                licenses.add(license);
+                License license = parseRowToLicenseObject(nextLine);
+                file.addLicense(license);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        FileData fileData = new FileData(fileName, count - 1,new Date(System.currentTimeMillis()), file);
-        fileDataRepo.save(fileData);
-        licenseRepo.saveAll(licenses);
+        return count;
     }
 
-    public List<License> findLicensesById(Long fileId) {
-        return licenseRepo.findAllByFileId(fileId);
+    private License parseRowToLicenseObject(String nextLine) {
+        String[] split = nextLine.split(Pattern.quote("|"));
+        return new License(split[0], split[1], split[2], split[3], split[4], split[5], split[6], split[7], split[8], split[9]);
     }
 }

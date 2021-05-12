@@ -1,12 +1,23 @@
 package com.example.scrapeit.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
 public class License {
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqGen")
+    @SequenceGenerator(name = "seqGen", sequenceName = "seq")
     private long id;
 
     private String licenseNumber;
@@ -37,7 +48,8 @@ public class License {
         this.file = file;
     }
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     private File file;
 
     public License(String licenseNumber, String lastName, String firstName, String middleName, String city, String state, String status, String issueDate, String expirationDate, String boardAction) {
@@ -134,5 +146,17 @@ public class License {
 
     public void setBoardAction(String boardAction) {
         this.boardAction = boardAction;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof License )) return false;
+        return licenseNumber != null && licenseNumber.equals(((License) o).getLicenseNumber());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

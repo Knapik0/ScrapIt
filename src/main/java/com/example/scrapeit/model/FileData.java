@@ -1,5 +1,7 @@
 package com.example.scrapeit.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -15,15 +17,16 @@ public class FileData {
 
     private Date createdAt;
 
-    @OneToOne
+    @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "file_id")
     @MapsId
     private File file;
 
-    public FileData(String fileName, int numRows, Date createdAt, File file) {
+    public FileData(String fileName, int numRows, Date createdAt) {
         this.fileName = fileName;
         this.numRows = numRows;
         this.createdAt = createdAt;
-        this.file = file;
     }
 
     public FileData() {
