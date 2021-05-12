@@ -32,7 +32,7 @@ public class FileService {
     public void saveFile(MultipartFile multipartFile) {
         String fileName = multipartFile.getOriginalFilename();
         File file = new File(fileName);
-        int count = parseRowsAndGetCount(multipartFile, file);
+        int count = parseAndCountLines(multipartFile, file);
         FileData fileData = new FileData(fileName, count - 1,new Date(System.currentTimeMillis()));
         file.setFileData(fileData);
         fileRepository.save(file);
@@ -42,7 +42,7 @@ public class FileService {
         return fileRepository.findAllLicensesById(fileId);
     }
 
-    private int parseRowsAndGetCount(MultipartFile multipartFile, File file) {
+    private int parseAndCountLines(MultipartFile multipartFile, File file) {
         int count = 0;
         try {
             InputStream inputStream = multipartFile.getInputStream();
@@ -53,7 +53,7 @@ public class FileService {
                 if (count == 1) {
                     continue;
                 }
-                License license = parseRowToLicenseObject(nextLine);
+                License license = parseLineToLicenseObject(nextLine);
                 file.addLicense(license);
             }
         } catch (IOException e) {
@@ -62,7 +62,7 @@ public class FileService {
         return count;
     }
 
-    private License parseRowToLicenseObject(String nextLine) {
+    private License parseLineToLicenseObject(String nextLine) {
         String[] split = nextLine.split(Pattern.quote("|"));
         return new License(split[0], split[1], split[2], split[3], split[4], split[5], split[6], split[7], split[8], split[9]);
     }

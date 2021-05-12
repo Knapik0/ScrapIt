@@ -10,7 +10,8 @@ import java.util.List;
 public class File {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqGen")
+    @SequenceGenerator(name = "seqGen", sequenceName = "seq")
     private Long id;
 
     private String name;
@@ -47,6 +48,15 @@ public class File {
         this.name = name;
     }
 
+    public FileData getFileData() {
+        return fileData;
+    }
+
+    public void setFileData(FileData fileData) {
+        this.fileData = fileData;
+        fileData.setFile(this);
+    }
+
     public List<License> getLicenses() {
         return licenses;
     }
@@ -58,14 +68,5 @@ public class File {
     public void addLicense(License license) {
         this.licenses.add(license);
         license.setFile(this);
-    }
-
-    public FileData getFileData() {
-        return fileData;
-    }
-
-    public void setFileData(FileData fileData) {
-        this.fileData = fileData;
-        fileData.setFile(this);
     }
 }

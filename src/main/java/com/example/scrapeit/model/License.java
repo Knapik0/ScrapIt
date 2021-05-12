@@ -7,14 +7,6 @@ import javax.persistence.*;
 @Entity
 public class License {
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqGen")
     @SequenceGenerator(name = "seqGen", sequenceName = "seq")
@@ -40,14 +32,6 @@ public class License {
 
     private String boardAction;
 
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
-
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private File file;
@@ -66,6 +50,14 @@ public class License {
     }
 
     public License() {
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getLicenseNumber() {
@@ -146,6 +138,14 @@ public class License {
 
     public void setBoardAction(String boardAction) {
         this.boardAction = boardAction;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 
     @Override
