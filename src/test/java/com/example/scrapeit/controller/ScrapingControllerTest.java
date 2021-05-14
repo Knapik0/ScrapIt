@@ -1,6 +1,5 @@
 package com.example.scrapeit.controller;
 
-import com.example.scrapeit.ScrapeItApplication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,71 +36,86 @@ class ScrapingControllerTest {
 
     @Test
     void listUploadedFiles() throws Exception {
+        //given
         String uri = "/files";
+
+        //when
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
-        int status = mvcResult.getResponse().getStatus();
-        assertEquals(200, status);
-        String content = mvcResult.getResponse().getContentAsString();
-        assertEquals("[{\"id\":1,\"name\":\"Test.txt\"}]", content);
+        //then
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertEquals("[{\"id\":1,\"name\":\"Test.txt\"}]", mvcResult.getResponse().getContentAsString());
     }
 
     @Test
     void getFileData() throws Exception {
+        //given
         String uri = "/files/1";
+
+        //when
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
-        int status = mvcResult.getResponse().getStatus();
-        assertEquals(200, status);
-        String content = mvcResult.getResponse().getContentAsString();
-        System.out.println(content);
-        assertTrue(content.startsWith("{\"fileId\":1,\"fileName\":\"Test.txt\""));
+        //then
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertTrue(mvcResult.getResponse().getContentAsString().startsWith("{\"fileId\":1,\"fileName\":\"Test.txt\""));
     }
 
     @Test
     void uploadFileResponsesWithAlreadyExistsWhenTryingToUploadExistingFile() throws Exception {
+        //given
+        String uri = "/";
         MockMultipartFile file = new MockMultipartFile("file", "Test.txt", "text/plain", "licenseNumber|lastName|firstName|middleName|city|state|status|issueDate|expirationDate|boardAction\r\n11111|Henderson|Aron|Von|Miami|FL|Active|11/12/2012|11/12/2002|NO\r\n22222|White|Dwayne||Miami|FL|Active|11/12/2012|11/12/2002|NO\r\n".getBytes());
-        MvcResult mvcResult = mvc.perform(multipart("/").file(file)).andReturn();
-        int status = mvcResult.getResponse().getStatus();
-        assertEquals(200, status);
-        String content = mvcResult.getResponse().getContentAsString();
-        assertEquals("File with given name already exists in database and wont be added", content);
+
+        //when
+        MvcResult mvcResult = mvc.perform(multipart(uri)
+                .file(file)).andReturn();
+
+        //then
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertEquals("File with given name already exists in database and wont be added", mvcResult.getResponse().getContentAsString());
     }
 
     @Test
     void uploadFileResponsesWithUploadSuccessfulWhenUploadingNewFile() throws Exception {
+        //given
+        String uri = "/";
         MockMultipartFile file = new MockMultipartFile("file", "Test1.txt", "text/plain", "licenseNumber|lastName|firstName|middleName|city|state|status|issueDate|expirationDate|boardAction\r\n11111|Henderson|Aron|Von|Miami|FL|Active|11/12/2012|11/12/2002|NO\r\n22222|White|Dwayne||Miami|FL|Active|11/12/2012|11/12/2002|NO\r\n".getBytes());
-        MvcResult mvcResult = mvc.perform(multipart("/").file(file)).andReturn();
-        int status = mvcResult.getResponse().getStatus();
-        assertEquals(200, status);
-        String content = mvcResult.getResponse().getContentAsString();
-        assertEquals("File uploaded successfully", content);
+
+        //when
+        MvcResult mvcResult = mvc.perform(multipart(uri).file(file)).andReturn();
+
+        //then
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertEquals("File uploaded successfully", mvcResult.getResponse().getContentAsString());
     }
 
     @Test
     void getLicensesById() throws Exception {
+        //given
         String uri = "/licenses/1";
+
+        //when
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
-        int status = mvcResult.getResponse().getStatus();
-        assertEquals(200, status);
-        String content = mvcResult.getResponse().getContentAsString();
-        assertTrue(content.length() > 0);
+        //then
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertTrue(mvcResult.getResponse().getContentAsString().lines().count() > 0);
     }
 
     @Test
     void getLicensesAsCSVById() throws Exception {
+        //given
         String uri = "/licensesAsCSV/1";
+
+        //when
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
-        int status = mvcResult.getResponse().getStatus();
-        assertEquals(200, status);
-        String content = mvcResult.getResponse().getContentAsString();
-        assertTrue(content.length() > 0);
-        assertTrue(content.startsWith("license"));
+        //then
+        assertEquals(200, mvcResult.getResponse().getStatus());
+        assertTrue(mvcResult.getResponse().getContentAsString().lines().count() > 0);
     }
 }

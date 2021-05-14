@@ -17,6 +17,7 @@ class FileTest {
 
     @Test
     void addsLicenseIfDistinct() {
+        //given
         License license = new License("11111|Henderson|Aron|Von|Miami|FL|Active|11/12/2012|11/12/2002|NO");
         License license1 = new License("22222|White|Dwayne||Miami|FL|Active|11/12/2012|11/12/2002|NO");
         file.addLicense(license);
