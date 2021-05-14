@@ -3,13 +3,13 @@ package com.example.scrapeit.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.regex.Pattern;
 
 @Entity
 public class License {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqGen")
-    @SequenceGenerator(name = "seqGen", sequenceName = "seq")
     private long id;
 
     private String licenseNumber;
@@ -36,17 +36,18 @@ public class License {
     @ManyToOne(fetch = FetchType.LAZY)
     private File file;
 
-    public License(String licenseNumber, String lastName, String firstName, String middleName, String city, String state, String status, String issueDate, String expirationDate, String boardAction) {
-        this.licenseNumber = licenseNumber;
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.city = city;
-        this.state = state;
-        this.status = status;
-        this.issueDate = issueDate;
-        this.expirationDate = expirationDate;
-        this.boardAction = boardAction;
+    public License(String row) {
+        String[] split = row.split(Pattern.quote("|"));
+        this.licenseNumber = split[0];
+        this.lastName = split[1];
+        this.firstName = split[2];
+        this.middleName = split[3];
+        this.city = split[4];
+        this.state = split[5];
+        this.status = split[6];
+        this.issueDate = split[7];
+        this.expirationDate = split[8];
+        this.boardAction = split[9];
     }
 
     public License() {
@@ -153,10 +154,5 @@ public class License {
         if (this == o) return true;
         if (!(o instanceof License )) return false;
         return licenseNumber != null && licenseNumber.equals(((License) o).getLicenseNumber());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
     }
 }

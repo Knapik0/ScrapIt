@@ -36,13 +36,16 @@ class CSVServiceTest {
     @Test
     void loadsCorrectByteArrayInputStream() {
         //given
-        License license = new License("11111", "Henderson", "Aron", "Von", "Miami", "FL", "Active", "11/12/2012", "11/12/2002", "NO");
-        License license1 = new License("22222", "White", "Dwayne", "", "Miami", "FL", "Active", "11/12/2012", "11/12/2002", "NO");
+        License license = new License("11111|Henderson|Aron|Von|Miami|FL|Active|11/12/2012|11/12/2002|NO");
+        License license1 = new License("22222|White|Dwayne||Miami|FL|Active|11/12/2012|11/12/2002|NO");
         List<License> licenses = new ArrayList<>();
+        File file = new File("Test.txt");
+        file.addLicense(license);
+        file.addLicense(license1);
         licenses.add(license);
         licenses.add(license1);
 
-        given(fileRepository.findAllLicensesById(anyLong())).willReturn(licenses);
+        given(fileRepository.findById(anyLong())).willReturn(java.util.Optional.of(file));
 
         assertEquals(CSVHelper.licencesToCSV(licenses).read(), underTest.load(0L).read());
 

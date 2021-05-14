@@ -1,5 +1,6 @@
 package com.example.scrapeit.model;
 
+import com.example.scrapeit.exception.LicenseDuplicateException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -66,7 +67,11 @@ public class File {
     }
 
     public void addLicense(License license) {
-        this.licenses.add(license);
-        license.setFile(this);
+        if (!this.licenses.contains(license)) {
+            this.licenses.add(license);
+            license.setFile(this);
+        } else {
+            throw new LicenseDuplicateException("License duplication");
+        }
     }
 }

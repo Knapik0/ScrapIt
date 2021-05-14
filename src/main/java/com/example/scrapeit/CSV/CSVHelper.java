@@ -11,13 +11,12 @@ import com.example.scrapeit.exception.CSVFileImportException;
 import com.example.scrapeit.model.License;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.csv.QuoteMode;
 
 public class CSVHelper {
 
     public static ByteArrayInputStream licencesToCSV(List<License> licenses) {
 
-        final CSVFormat format = CSVFormat.DEFAULT.withQuoteMode(QuoteMode.MINIMAL);
+        final CSVFormat format = CSVFormat.DEFAULT.withHeader("licenseNumber", "lastName", "firstName", "middleName", "city", "state", "status", "issueDate", "expirationDate", "boardAction");
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
              CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(outputStream), format)) {
@@ -34,7 +33,6 @@ public class CSVHelper {
                         license.getExpirationDate(),
                         license.getBoardAction()
                 );
-
                 csvPrinter.printRecord(data);
             }
 

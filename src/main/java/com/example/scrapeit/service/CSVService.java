@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import com.example.scrapeit.CSV.CSVHelper;
+import com.example.scrapeit.exception.FileOfGivenIdNotFoundException;
 import com.example.scrapeit.model.License;
 import com.example.scrapeit.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,9 @@ public class CSVService {
     }
 
     public ByteArrayInputStream load(Long fileId) {
-        List<License> licenses = fileRepository.findAllLicensesById(fileId);
+        List<License> licenses = fileRepository.findById(fileId)
+                .orElseThrow(() -> new FileOfGivenIdNotFoundException("File with id  " + fileId + " was not found in database"))
+                .getLicenses();
 
         return CSVHelper.licencesToCSV(licenses);
     }

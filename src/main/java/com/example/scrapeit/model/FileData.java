@@ -17,15 +17,18 @@ public class FileData {
 
     private Date createdAt;
 
+    private int duplicates;
+
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "file_id")
+    @JoinColumn(name = "file_id", insertable = false, updatable = false)
     @MapsId
     private File file;
 
-    public FileData(String fileName, int numRows, Date createdAt) {
+    public FileData(String fileName, int numRows, int duplicates ,Date createdAt) {
         this.fileName = fileName;
         this.numRows = numRows;
+        this.duplicates = duplicates;
         this.createdAt = createdAt;
     }
 
@@ -71,5 +74,13 @@ public class FileData {
 
     public void setFile(File file) {
         this.file = file;
+    }
+
+    public int getDuplicates() {
+        return duplicates;
+    }
+
+    public void setDuplicates(int duplicates) {
+        this.duplicates = duplicates;
     }
 }
