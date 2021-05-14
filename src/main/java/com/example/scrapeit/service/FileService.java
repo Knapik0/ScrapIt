@@ -36,9 +36,7 @@ public class FileService {
     }
 
     public List<License> findLicensesById(Long fileId) {
-        return fileRepository.findById(fileId)
-                .orElseThrow(() -> new FileOfGivenIdNotFoundException("File with id  " + fileId + " was not found in database"))
-                .getLicenses();
+        return fileRepository.findAllLicensesById(fileId);
     }
 
     public String findFileNameById(Long fileId) {
@@ -54,6 +52,8 @@ public class FileService {
             fileRepository.save(file);
         } catch (FileDuplicateException e) {
             return "File with given name already exists in database and wont be added";
+        } catch (FileParserException e) {
+            return "Couldn't parse file. Caused by: " + e.getMessage();
         }
         return "File uploaded successfully";
     }
@@ -82,7 +82,7 @@ public class FileService {
                 }
             }
         } catch (IOException e) {
-            throw new FileParserException("Couldn't parse file");
+            e.printStackTrace();
         }
         FileData fileData = new FileData(fileName, count - 1, duplicatesCount, new Date(System.currentTimeMillis()));
         file.setFileData(fileData);

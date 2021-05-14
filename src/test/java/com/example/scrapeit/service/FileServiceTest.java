@@ -13,7 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -26,8 +28,8 @@ class FileServiceTest {
     @Mock
     private FileRepository fileRepository;
     private FileService underTest;
-    private MockMultipartFile mockMultipartFile = new MockMultipartFile("data", "Test.txt", "text/plain", "licenseNumber|lastName|firstName|middleName|city|state|status|issueDate|expirationDate|boardAction\r\n11111|Henderson|Aron|Von|Miami|FL|Active|11/12/2012|11/12/2002|NO\r\n22222|White|Dwayne||Miami|FL|Active|11/12/2012|11/12/2002|NO\r\n".getBytes());
-    private MockMultipartFile duplicatedLicensesFile = new MockMultipartFile("data", "Test.txt", "text/plain", "licenseNumber|lastName|firstName|middleName|city|state|status|issueDate|expirationDate|boardAction\r\n11111|Henderson|Aron|Von|Miami|FL|Active|11/12/2012|11/12/2002|NO\r\n22222|White|Dwayne||Miami|FL|Active|11/12/2012|11/12/2002|NO\r\n".getBytes());
+    private final MockMultipartFile mockMultipartFile = new MockMultipartFile("data", "Test.txt", "text/plain", "licenseNumber|lastName|firstName|middleName|city|state|status|issueDate|expirationDate|boardAction\r\n11111|Henderson|Aron|Von|Miami|FL|Active|11/12/2012|11/12/2002|NO\r\n22222|White|Dwayne||Miami|FL|Active|11/12/2012|11/12/2002|NO\r\n".getBytes());
+    private final MockMultipartFile duplicatedLicensesFile = new MockMultipartFile("data", "Test.txt", "text/plain", "licenseNumber|lastName|firstName|middleName|city|state|status|issueDate|expirationDate|boardAction\r\n11111|Henderson|Aron|Von|Miami|FL|Active|11/12/2012|11/12/2002|NO\r\n22222|White|Dwayne||Miami|FL|Active|11/12/2012|11/12/2002|NO\r\n".getBytes());
 
     @BeforeEach
     void setUp() {
@@ -61,14 +63,18 @@ class FileServiceTest {
         //when
         License license = new License("11111|Henderson|Aron|Von|Miami|FL|Active|11/12/2012|11/12/2002|NO");
         License license1 = new License("22222|White|Dwayne||Miami|FL|Active|11/12/2012|11/12/2002|NO");
+        List<License> licenses = new ArrayList<>();
+        licenses.add(license);
+        licenses.add(license1);
         File file = new File("Test.txt");
         file.addLicense(license);
         file.addLicense(license1);
-        given(fileRepository.findById(anyLong())).willReturn(java.util.Optional.of(file));
+
+        given(fileRepository.findAllLicensesById(anyLong())).willReturn(licenses);
 
         //then
         assertEquals(2, underTest.findLicensesById(1L).size());
-        verify(fileRepository).findById(anyLong());
+        verify(fileRepository).findAllLicensesById(anyLong());
     }
 
     @Test
@@ -84,8 +90,11 @@ class FileServiceTest {
 
     @Test
     void throwsExceptionWhenFileOfGivenIdDoesntExist() {
+        //when
         FileOfGivenIdNotFoundException fileException = assertThrows(FileOfGivenIdNotFoundException.class,
                 () -> underTest.findFileNameById(1L));
+
+        //then
         assertEquals("File with id  1 was not found in database", fileException.getMessage());
     }
 
