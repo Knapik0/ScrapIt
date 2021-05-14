@@ -1,5 +1,6 @@
 package com.example.scrapeit.model;
 
+import com.example.scrapeit.exception.FileParserException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -34,10 +35,14 @@ public class License {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "file_id", nullable = false)
     private File file;
 
     public License(String row) {
         String[] split = row.split(Pattern.quote("|"));
+        if (split.length != 10) {
+            throw new FileParserException("Row has corrupted input");
+        }
         this.licenseNumber = split[0];
         this.lastName = split[1];
         this.firstName = split[2];

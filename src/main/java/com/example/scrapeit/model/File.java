@@ -12,17 +12,16 @@ public class File {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqGen")
-    @SequenceGenerator(name = "seqGen", sequenceName = "seq")
     private Long id;
 
     private String name;
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "id", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<License> licenses = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "id", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<License> licenses;
 
     @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "id")
     private FileData fileData;
 
@@ -67,6 +66,9 @@ public class File {
     }
 
     public void addLicense(License license) {
+        if (this.licenses == null) {
+            licenses = new ArrayList<>();
+        }
         if (!this.licenses.contains(license)) {
             this.licenses.add(license);
             license.setFile(this);
