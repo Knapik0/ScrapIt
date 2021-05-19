@@ -36,36 +36,8 @@ public class FileData {
 
     }
 
-    public Long getFileId() {
-        return fileId;
-    }
-
-    public void setFileId(Long fileId) {
-        this.fileId = fileId;
-    }
-
     public String getFileName() {
         return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public int getNumRows() {
-        return numRows;
-    }
-
-    public void setNumRows(int numRows) {
-        this.numRows = numRows;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
     }
 
     public File getFile() {
@@ -76,11 +48,4 @@ public class FileData {
         this.file = file;
     }
 
-    public int getDuplicates() {
-        return duplicates;
-    }
-
-    public void setDuplicates(int duplicates) {
-        this.duplicates = duplicates;
-    }
 }
