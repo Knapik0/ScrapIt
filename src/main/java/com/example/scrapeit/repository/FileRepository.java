@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface FileRepository extends JpaRepository<File, Long> {
 
-    @Query("SELECT u FROM License u WHERE u.file.id = ?1")
+    @Query("SELECT l FROM License l WHERE l.file.id = ?1")
     List<License> findAllLicensesById(Long fileId);
 
     File findByName(String fileName);

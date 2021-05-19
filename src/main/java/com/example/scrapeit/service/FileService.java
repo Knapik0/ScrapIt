@@ -12,9 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class FileService {
@@ -28,7 +31,7 @@ public class FileService {
     public List<File> loadAllFiles() {
         return fileRepository.findAll();
     }
-    
+
     public FileData findFileDataById(Long fileId) {
         return fileRepository.findById(fileId)
                 .orElseThrow(() -> new FileOfGivenIdNotFoundException("File with id  " + fileId + " was not found in database"))
@@ -60,7 +63,7 @@ public class FileService {
 
     private File createFile(MultipartFile multipartFile) {
         String fileName = multipartFile.getOriginalFilename();
-        if (fileRepository.findByName(fileName) != null){
+        if (fileRepository.findByName(fileName) != null) {
             throw new FileDuplicateException("File duplicate");
         }
         File file = new File(fileName);

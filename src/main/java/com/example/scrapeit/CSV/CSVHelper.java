@@ -1,16 +1,16 @@
 package com.example.scrapeit.CSV;
 
+import com.example.scrapeit.exception.CSVFileImportException;
+import com.example.scrapeit.model.License;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
-
-import com.example.scrapeit.exception.CSVFileImportException;
-import com.example.scrapeit.model.License;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
 
 public class CSVHelper {
 

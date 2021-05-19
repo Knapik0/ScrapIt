@@ -25,7 +25,7 @@ public class FileData {
     @MapsId
     private File file;
 
-    public FileData(String fileName, int numRows, int duplicates ,Date createdAt) {
+    public FileData(String fileName, int numRows, int duplicates, Date createdAt) {
         this.fileName = fileName;
         this.numRows = numRows;
         this.duplicates = duplicates;

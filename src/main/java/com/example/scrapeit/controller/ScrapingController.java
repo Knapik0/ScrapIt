@@ -52,7 +52,7 @@ public class ScrapingController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-// additional endpoint - returns licenses from specific file in json format, delete if YAGNI
+    // additional endpoint - returns licenses from specific file in json format, delete if YAGNI
     @GetMapping("/licenses/{fileId}")
     @ResponseBody
     public ResponseEntity<List<License>> getLicensesById(@PathVariable("fileId") Long fileId) {

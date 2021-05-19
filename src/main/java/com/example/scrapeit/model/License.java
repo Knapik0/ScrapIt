@@ -157,7 +157,7 @@ public class License {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof License )) return false;
+        if (!(o instanceof License)) return false;
         return licenseNumber != null && licenseNumber.equals(((License) o).getLicenseNumber());
     }
 }
